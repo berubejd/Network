@@ -1,0 +1,29 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<header class="pb-4">Home</header>
+{% if user.is_authenticated %}
+<div id="create-post" class="d-flex">
+    <div class="user-image pt-2 pe-2">
+        <img src="{{ request.user.photo_url }}" alt="" width="48" height="48" class="rounded-circle me-2">
+    </div>
+    <div class="w-100">
+        <form id="post-form" method="post">
+            {% csrf_token %}
+            <textarea id="post-body" class="form-control" placeholder="Have something to say?"></textarea>
+            <input id="post-button" type="submit" class="btn btn-network rounded-pill float-end my-2" value="Say it!">
+        </form>
+    </div>
+</div>
+<hr>
+{% endif %}
+<div id="posts" data-csrf="{{ csrf_token }}"></div>
+<div id="pagination" class="pt-4">
+    <ul class="pagination justify-content-center"></ul>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'network/index.js' %}"></script>
+{% endblock %}

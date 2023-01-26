@@ -1,0 +1,173 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="Description" content="Get your networking on!">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link href="{% static 'network/styles.css' %}" rel="stylesheet">
+    <title>Social Network- {% block title %}Welcome!{% endblock %}</title>
+</head>
+
+<body>
+
+    <div id="container" class="d-flex flex-nowrap mx-auto">
+
+        <nav class="d-flex flex-column flex-shrink-0 p-3">
+            <a href="{% url 'index' %}"
+                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto fs-2 text-decoration-none no-hover">
+                <i class="bi bi-wifi pe-3"></i>
+                <span>Network</span>
+            </a>
+
+            <ul class="nav nav-pills flex-column mt-5 mb-auto">
+                <li class="nav-item">
+                    <a href="{% url 'index' %}" class="nav-link pe-5 rounded-pill">
+                        <i class="bi bi-house-fill pe-3"></i>
+                        Home
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a href="{% url 'view_followed' %}" class="nav-link pe-5 rounded-pill">
+                        <i class="bi bi-bell-fill pe-3"></i>
+                        Following
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'view_profile' username=request.user.username %}"
+                        class="nav-link pe-5 rounded-pill">
+                        <i class="bi bi-person-badge-fill pe-3"></i>
+                        Profile
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+
+            {% if user.is_authenticated %}
+            <div class="dropend">
+                <a class="d-flex align-items-center text-decoration-none dropdown-toggle no-hover"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="{{ request.user.photo_url }}" alt="" width="32" height="32" class="rounded-circle me-2">
+                    <strong>{{ request.user.username }}</strong>
+                </a>
+                <ul class="dropdown-menu text-small shadow">
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
+                </ul>
+            </div>
+            {% else %}
+            <a data-bs-toggle="modal" href="#modalLogin" class="d-flex align-items-center text-decoration-none">
+                Log In
+            </a>
+            {% endif %}
+        </nav>
+
+        {% include 'network/partial_messages.html' %}
+
+        <main class="d-flex flex-column w-100 p-5 no-scrollbar">
+            {% block body %}{% endblock %}
+        </main>
+
+        <!-- Login and Registration Modals -->
+
+        <!-- Login Modal -->
+        <div class="modal fade" id="modalLogin" aria-hidden="true" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Login -->
+                    <div id="loginForm" class="m-auto w-100 p-4 border rounded text-center">
+                        <h2 class="mb-5">Welcome!</h2>
+
+                        {% if message %}
+                        <div>{{ message }}</div>
+                        {% endif %}
+
+                        <form class="mt-3 mb-4" action="{% url 'login' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-floating mb-2">
+                                <input class="form-control" type="text" required id="loginFormUsername" name="username"
+                                    placeholder="Username">
+                                <label for="loginFormUsername">Username</label>
+                            </div>
+                            <div class="form-floating mb-4">
+                                <input class="form-control" type="password" required id="loginFormPassword"
+                                    name="password" placeholder="password">
+                                <label for="loginFormPassword">Password</label>
+                            </div>
+                            <input class="btn btn-primary w-100" type="submit" value="Login">
+                        </form>
+
+                        Don't have an account? <a href="#" class="text-decoration-none" data-bs-target="#modalRegister"
+                            data-bs-toggle="modal" data-bs-dismiss="modal">Register here.</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Modal -->
+        <div class="modal fade" id="modalRegister" aria-hidden="true" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Registration -->
+                    <div id="registerForm" class="m-auto w-100 p-4 border rounded text-center">
+                        <h2 class="mb-5">Let's get started!</h2>
+
+                        {% if message %}
+                        <div>{{ message }}</div>
+                        {% endif %}
+
+                        <form class="mt-3 mb-4" action="{% url 'register' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-floating mb-2">
+                                <input class="form-control" type="text" required id="registerFormUsername"
+                                    name="username" placeholder="Username">
+                                <label for="registerFormUsername">Username</label>
+                            </div>
+                            <div class="form-floating mb-2">
+                                <input class="form-control" type="email" required id="registerFormEmail" name="email"
+                                    placeholder="Email Address">
+                                <label for="registerFormUsername">Email Address</label>
+                            </div>
+                            <div class="row g-2 mb-4">
+                                <div class="form-floating col-6">
+                                    <input class=" form-control" type="password" required id="registerFormPassword"
+                                        name="password" placeholder="Password">
+                                    <label for="registerFormPassword">Password</label>
+                                </div>
+                                <div class="form-floating col-6">
+                                    <input class="form-control" type="password" required id="registerFormConfirmation"
+                                        name="confirmation" placeholder="Confirm Password">
+                                    <label for="registerFormPassword">Confirm Password</label>
+                                </div>
+                            </div>
+                            <input class="btn btn-primary w-100" type="submit" value="Register">
+                        </form>
+
+                        Already have an account? <a href="#" class="text-decoration-none" data-bs-target="#modalLogin"
+                            data-bs-toggle="modal" data-bs-dismiss="modal">Log In here.</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Bootstrap Library -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
+            </script>
+
+        <!-- Local scripts -->
+        <script type="text/javascript" src="{% static 'network/main.js' %}"></script>
+        {% block script %}{% endblock %}
+    </div>
+</body>
+
+</html>

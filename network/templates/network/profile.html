@@ -1,0 +1,33 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<header class="pb-4">Profile</header>
+
+<div id="profile" class="d-flex flex-column py-3">
+    <div class="user-image mx-auto">
+        <img src="{{ profile.photo_url }}" alt="" width="192" height="192" class="rounded-circle">
+    </div>
+    <div id="user-name" class="text-center pt-5">
+        <span>{{ profile.first_name}} "{{ profile.username }}" {{ profile.last_name }}</span>
+    </div>
+    {% if user.is_authenticated and not request.user == profile %}
+    <div id="user-controls" class="text-center">
+    </div>
+    {% endif %}
+    <div id="user-stats" class="text-center muted pt-3">
+        <span id="user-followers" class="px-2"></span>
+        <span id="user-following" class="px-2"></span>
+    </div>
+</div>
+<hr>
+
+<div id="posts" data-csrf="{{ csrf_token }}" data-username="{{ profile.username }}"></div>
+<div id="pagination" class="pt-4">
+    <ul class="pagination justify-content-center"></ul>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src=" {% static 'network/profile.js' %}"></script>
+{% endblock %}

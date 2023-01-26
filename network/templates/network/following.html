@@ -1,0 +1,15 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<header class="pb-4">Following</header>
+
+<div id="posts" data-csrf="{{ csrf_token }}" data-username="{{ user.username }}"></div>
+<div id="pagination" class="pt-4">
+    <ul class="pagination justify-content-center"></ul>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'network/following.js' %}"></script>
+{% endblock %}
